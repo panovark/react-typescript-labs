@@ -8,8 +8,9 @@
  * React.ReactChild[];
  */
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type BoxProps = { children: any }; /* 👈 Get rid of this! 👆 */
+import type { ReactNode } from 'react';
+
+type BoxProps = { width: number; height: number; children: ReactNode };
 
 const Box = ({ children }: BoxProps) => {
   return (
