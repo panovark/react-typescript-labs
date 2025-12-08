@@ -1,5 +1,5 @@
 import { Card } from '$/common/components/card';
-import { useState, type FormEventHandler } from 'react';
+import { useState, type ComponentPropsWithoutRef } from 'react';
 import { Button } from './button';
 
 type CounterControlsProps = {
@@ -9,16 +9,17 @@ type CounterControlsProps = {
 const CounterControls = ({ setCount }: CounterControlsProps) => {
   return (
     <div className="flex gap-2">
-      <button onClick={() => setCount((prev) => prev - 1)}>➖ Decrement</button>
-      <button onClick={() => setCount(0)}>🔁 Reset</button>
-      <button onClick={() => setCount((prev) => prev + 1)}>➕ Increment</button>
+      <Button onClick={() => setCount((prev) => prev - 1)}>➖ Decrement</Button>
+      <Button onClick={() => setCount(0)}>🔁 Reset</Button>
+      <Button onClick={() => setCount((prev) => prev + 1)}>➕ Increment</Button>
     </div>
   );
 };
 
-type CounterFormProps = {
-  onSubmit: FormEventHandler<HTMLFormElement>;
-};
+interface CounterFormProps extends ComponentPropsWithoutRef<'form'> {
+  /**The layout of the form */
+  layout?: 'horizontal' | 'vertical';
+}
 
 const CounterForm = ({ onSubmit }: CounterFormProps) => {
   const [inputValue, setInputValue] = useState<number>(0);
@@ -32,7 +33,7 @@ const CounterForm = ({ onSubmit }: CounterFormProps) => {
         value={inputValue}
         onChange={(e) => setInputValue(Number(e.target.value))}
       />
-      <Button>Update Counter</Button>
+      <Button type="submit">Set count</Button>
     </form>
   );
 };
@@ -46,6 +47,7 @@ export const Counter = () => {
       <p className="text-6xl">{count}</p>
       <CounterControls setCount={setCount} />
       <CounterForm
+        layout="vertical"
         onSubmit={(e) => {
           e.preventDefault();
           const formData = new FormData(e.currentTarget);
