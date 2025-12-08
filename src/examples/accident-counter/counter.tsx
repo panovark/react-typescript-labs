@@ -1,5 +1,5 @@
 import { Card } from '$/common/components/card';
-import { useState } from 'react';
+import { useState, type FormEventHandler } from 'react';
 import { Button } from './button';
 
 type CounterControlsProps = {
@@ -17,25 +17,20 @@ const CounterControls = ({ setCount }: CounterControlsProps) => {
 };
 
 type CounterFormProps = {
-  setCount: React.Dispatch<React.SetStateAction<number>>;
+  onSubmit: FormEventHandler<HTMLFormElement>;
 };
 
-const CounterForm = ({ setCount }: CounterFormProps) => {
+const CounterForm = ({ onSubmit }: CounterFormProps) => {
+  const [inputValue, setInputValue] = useState<number>(0);
+
   return (
-    <form
-      className="flex items-center gap-2"
-      onSubmit={(e) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        const newCount = Number(formData.get('count'));
-        setCount(newCount);
-      }}
-    >
+    <form className="flex items-center gap-2" onSubmit={onSubmit}>
       <input
         className="ring-primary-600 focus:border-primary-800 rounded border border-slate-500 px-4 py-2 outline-none focus:ring-2"
         type="number"
         name="count"
-        defaultValue={0}
+        value={inputValue}
+        onChange={(e) => setInputValue(Number(e.target.value))}
       />
       <Button>Update Counter</Button>
     </form>
@@ -50,7 +45,14 @@ export const Counter = () => {
       <h1>Days Since the Last Accident</h1>
       <p className="text-6xl">{count}</p>
       <CounterControls setCount={setCount} />
-      <CounterForm setCount={setCount} />
+      <CounterForm
+        onSubmit={(e) => {
+          e.preventDefault();
+          const formData = new FormData(e.currentTarget);
+          const newCount = Number(formData.get('count'));
+          setCount(newCount);
+        }}
+      />
     </Card>
   );
 };
